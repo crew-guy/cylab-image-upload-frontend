@@ -8,23 +8,21 @@ export default function Home() {
     setFile(event.target.files[0]);
   };
 
-
   const uploadFile = async (file: any) => {
-    console.log('UPLOADING FILE NOW......', file.name)
+    // console.log('UPLOADING FILE NOW......', file.name)
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('filename', file.name);
+    formData.append('filename', file.name.replace(/\s/g, ''));
 
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: file
-    });
-
-    if ((response as any).status === 200) {
-      console.log(response)
-    } else {
-      console.error('Error uploading image:', response.statusText);
+    try {
+      await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+    } catch (error) {
+      console.log('error', error)
     }
+
   };
 
   return (
