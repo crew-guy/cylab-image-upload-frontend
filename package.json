@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@azure/storage-blob": "^12.15.0",
+    "@types/multiparty": "^0.0.33",
     "@types/node": "20.6.0",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "busboy": "^1.6.0",
+    "multiparty": "^4.2.3",
     "next": "13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",

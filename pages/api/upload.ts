@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import Busboy from 'busboy';
+import multiparty from "multiparty";
 
-const AZURE_CONNECTION_STRING = "=hqt&srt=sco&sp=rwdlacupiytfx&se=2023-09-25T09:45:52Z&st=2023-09-15T01:45:52Z&sip=0.0.0.0-255.255.255.255&spr=https,http&sig=z2XowQz7rjOfBrTjJtLt%2BEPGnTHdDp%2F%2B1kLVOnrgAXU%3D"
-const AZURE_SAS_TOKEN = "svF%2B1kLVOnrgAXU%3D"
-const AZURE_CONTAINER_NAME = ""
+const AZURE_CONNECTION_STRING = process.env.NEXT_PUBLIC_AZURE_CONNECTION_STRING
+const AZURE_SAS_TOKEN = process.env.NEXT_PUBLIC_AZURE_SAS_TOKEN
+const AZURE_CONTAINER_NAME = process.env.NEXT_PUBLIC_AZURE_CONTAINER_NAME
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -34,9 +36,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     busboy.on('finish', async function () {
-        const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_CONNECTION_STRING);
-        const sasToken = AZURE_SAS_TOKEN;
-        const containerName = AZURE_CONTAINER_NAME;
+        const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_CONNECTION_STRING as string);
+        const sasToken = AZURE_SAS_TOKEN as string;
+        const containerName = AZURE_CONTAINER_NAME as string;
         const containerUrl = blobServiceClient.getContainerClient(containerName).url + sasToken;
         const containerClient = new ContainerClient(containerUrl);
         const blobClient = containerClient.getBlobClient(fileName || "defaultName.pdf");
@@ -62,3 +64,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         req.pipe(busboy).on('finish', busboy.end);
     }
 }
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
