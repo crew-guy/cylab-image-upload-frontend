@@ -1,13 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import Busboy from 'busboy';
+import archiver from 'archiver';
 
 const AZURE_CONNECTION_STRING = process.env.NEXT_PUBLIC_AZURE_CONNECTION_STRING
 const AZURE_SAS_TOKEN = process.env.NEXT_PUBLIC_AZURE_SAS_TOKEN
 const AZURE_CONTAINER_NAME = process.env.NEXT_PUBLIC_AZURE_CONTAINER_NAME
 
 function uploadToAzure(fileData: Buffer[], fileName: string): Promise<any> {
-    console.log(`Uploading '${fileName}' to Azure`)
+    console.log(`🟡Uploading '${fileName}' to Azure`)
     return new Promise(async (resolve, reject) => {
         const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_CONNECTION_STRING as string);
         const sasToken = AZURE_SAS_TOKEN as string;
@@ -37,16 +38,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 
     const uploadPromises: Promise<any>[] = [];
-    const busboy = Busboy({ headers: req.headers, limits: { fileSize: 10 * 1024 * 1024 } });
+    const busboy = Busboy({ headers: req.headers });
+    const files: { data: Buffer[], name: string }[] = [];
 
     busboy.on('file', function (fieldname: any, file: any, fname: any) {
         // In this case "fieldname" is "file"
         // Sample "fname" object looks like this - {"filename":"IMG_0235.HEIC","encoding":"7bit","mimeType":"image/heic"}
         const fileData: Buffer[] = [];
         const fileName = fname.filename;
-        console.log(`Upload of '${fname.filename}' started`)
+        console.log(`🔴Upload of '${fname.filename}' started`)
         file.on('data', (data: any) => {
-            fileData.push(data);
+            file.on('end', function () {
+                files.push({ data: fileData, name: fileName });
+            });
         });
         file.on('error', (error: any) => {
             console.error('Error with file stream:', error);
@@ -55,6 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const uploadPromise = new Promise(async (resolve, reject) => {
                 try {
                     const response = await uploadToAzure(fileData, fileName as string);
+                    console.log('🟢Upload of file complete' + fileName)
                     resolve(response);
                 } catch (error) {
                     res.status(500).send("Failed to upload file");
@@ -69,11 +74,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     busboy.on('finish', async function () {
         try {
-            const results = await Promise.all(uploadPromises);
-            return res.status(200).json({ results });
+            if (req.body.zipFiles === "true") {
+                // Create a zip
+                const zip = archiver('zip');
+                const zipBuffers: Buffer[] = [];
+                zip.on('data', (data: Buffer) => zipBuffers.push(data));
+                zip.on('end', async () => {
+                    const concatenatedBuffer = Buffer.concat(zipBuffers);
+                    await uploadToAzure([concatenatedBuffer], 'combined.zip');
+                    return res.status(200).send('Zipped files uploaded successfully');
+                });
+
+                // Append all the files to the zip
+                files.forEach(file => {
+                    zip.append(Buffer.concat(file.data), { name: file.name });
+                });
+
+                // Finalize the zip archive
+                zip.finalize();
+            } else {
+                await Promise.all(files.map(file => uploadToAzure(file.data, file.name)));
+                return res.status(200).send('Files uploaded successfully');
+            }
         } catch (error) {
-            console.log(error);
-            return res.status(403).send(error);
+            console.error('Error:', error);
+            return res.status(500).send('An error occurred');
         }
     });
     busboy.on('error', function (error) {
@@ -146,8 +171,6 @@ export const config = {
 //         console.error('Error parsing form:', error);
 //         res.status(500).send("Failed to parse form");
 //     });
-
-
 
 //     if (req.method === 'POST') {
 //         req.pipe(busboy).on('finish', busboy.end);

@@ -12,14 +12,14 @@ export default function Home() {
   };
 
 
-  const uploadFiles = async () => {
+  const uploadFiles = async (zipFiles: boolean) => {
     setLoading(true);
     const startTime = Date.now();  // Timestamp before starting uploads
 
     const uploadPromises = files?.map(async (file, index) => {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('filename', file.name.replace(/\s/g, ''));
+      formData.append('filename', file.name.replace(/\s/g, '')); formData.append('zipFiles', String(zipFiles));
       console.log(`File number ${index + 1} is being uploaded`)
       return fetch('/api/upload', {
         method: 'POST',
@@ -40,7 +40,9 @@ export default function Home() {
   return (
     <div>
       <input multiple type="file" onChange={handleFileChange} />
-      <button onClick={uploadFiles}>Upload to Azure</button>
+      <button onClick={() => uploadFiles(false)}>Upload to Azure</button>
+      <button style={{ marginLeft: '2rem' }} onClick={() => uploadFiles(false)}>Zip and Upload to Azure</button>
+
       {uploadDuration && <p>Upload duration: {uploadDuration} milliseconds</p>}
       {loading && <p>Uploading...</p>}
     </div>
