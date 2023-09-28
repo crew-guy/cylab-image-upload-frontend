@@ -66,7 +66,7 @@
 # CMD ["node", "server.js"]
 
 # Set the base image to Node
-FROM node:14-alpine
+FROM node:18-alpine
 
 # Set the working directory in docker
 WORKDIR /app
