@@ -16,12 +16,12 @@ export default function Home() {
     setLoading(true);
     const startTime = Date.now();  // Timestamp before starting uploads
 
-    const uploadPromises = files?.map(async (file, index) => {
+    const uploadPromises = files?.map(async (file: any, index: any) => {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('filename', file.name.replace(/\s/g, ''));
       console.log(`File number ${index + 1} is being uploaded`)
-      return fetch('/api/upload', {
+      return fetch('/api/upload2', {
         method: 'POST',
         body: formData
       });
