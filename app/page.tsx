@@ -20,19 +20,25 @@ export default function Home() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('filename', file.name.replace(/\s/g, ''));
-      console.log(`File number ${index + 1} is being uploaded`)
-      return fetch('/api/upload', {
-        method: 'POST',
-        body: formData
-      });
+      // console.log(`File number ${index + 1} is being uploaded`)
+      try {
+        const response = fetch('/api/upload2', {
+          method: 'POST',
+          body: formData
+        });
+        return response;
+      } catch (error: any) {
+        console.log('error', error.message);
+      }
     });
 
     try {
       await Promise.all(uploadPromises);
+      console.log(`File is uploaded`)
       const endTime = Date.now();  // Timestamp after all uploads are finished
       setUploadDuration(endTime - startTime);  // Set the duration difference
-    } catch (error) {
-      console.log('error', error);
+    } catch (error: any) {
+      console.log('error', error.message);
     }
     setLoading(false);
   };
