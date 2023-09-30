@@ -1,5 +1,6 @@
 "use client"
 import { useState } from 'react';
+import './page.module.css'
 
 export default function Home() {
   const [files, setFiles] = useState<File[]>([]);
@@ -12,7 +13,7 @@ export default function Home() {
   };
 
 
-  const uploadFiles = async () => {
+  const uploadFiles = async (apiEndpointUrl: string) => {
     setLoading(true);
     const startTime = Date.now();  // Timestamp before starting uploads
 
@@ -22,7 +23,7 @@ export default function Home() {
       formData.append('filename', file.name.replace(/\s/g, ''));
       // console.log(`File number ${index + 1} is being uploaded`)
       try {
-        const response = fetch('/api/upload2', {
+        const response = fetch(apiEndpointUrl, {
           method: 'POST',
           body: formData
         });
@@ -44,9 +45,27 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className='app-container' style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      height: '100vh',
+    }}>
+      <h2>Image Uploader</h2>
       <input multiple type="file" onChange={handleFileChange} />
-      <button onClick={uploadFiles}>Upload to Azure</button>
+      <button
+        style={{
+          padding: '10px',
+          fontSize: '1rem'
+        }}
+        onClick={() => uploadFiles('/api/upload')}>Upload Serially to Azure</button>
+      <button
+        style={{
+          padding: '10px',
+          fontSize: '1rem'
+        }}
+        onClick={() => uploadFiles('/api/upload2')}>Upload Parallely to Azure</button>
       {uploadDuration && <p>Upload duration: {uploadDuration} milliseconds</p>}
       {loading && <p>Uploading...</p>}
     </div>
