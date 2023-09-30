@@ -67,7 +67,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(200).json({ results });
         } catch (error) {
             console.log(error);
-            return res.status(403).send(error);
         }
     });
     busboy.on('error', function (error) {
