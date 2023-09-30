@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             worker.on('message', (data: any, error: any) => {
                 if (data.status === 'success') {
                     console.log(`Upload of '${fileName}' complete`, { data })
-                    res.status(201).json({ data })
+                    // res.status(201).json({ data })
                 } else {
                     // Handle error
                     console.log(`Upload of '${fileName}' failed`, { error })
