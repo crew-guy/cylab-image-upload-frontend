@@ -27,21 +27,22 @@ export default function Home() {
           method: 'POST',
           body: formData
         });
-        return response;
+        return response.json();  // Ensure you are returning a promise here
       } catch (error: any) {
         console.log('error', error.message);
       }
     });
 
     try {
-      await Promise.all(uploadPromises);
-      console.log(`File is uploaded`)
-      const endTime = await Date.now();  // Timestamp after all uploads are finished
-      await setUploadDuration(endTime - startTime);  // Set the duration difference
+      const responses = await Promise.all(uploadPromises);  // Wait for all promises to resolve
+      console.log(`Files are uploaded`, responses);
+      const endTime = Date.now();  // Timestamp after all uploads are finished
+      setUploadDuration(endTime - startTime);  // Set the duration difference
     } catch (error: any) {
       console.log('error', error.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

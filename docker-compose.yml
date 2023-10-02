@@ -14,11 +14,11 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-  nginx_lb:
-    container_name: nginx_container
-    build:
-      context: .
-      dockerfile: nginx.Dockerfile
-    ports:
-      - "80:80"
-      - "443:443"
+  # nginx_lb:
+  #   container_name: nginx_container
+  #   build:
+  #     context: .
+  #     dockerfile: nginx.Dockerfile
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"

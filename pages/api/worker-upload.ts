@@ -16,7 +16,7 @@ parentPort.on('message', async (data: any) => {
 
     try {
         const response = await blockBlobClient.upload(finalFileBuffer, finalFileBuffer.length);
-        parentPort.postMessage({ status: 'success', response });
+        await parentPort.postMessage({ status: 'success', response });
     } catch (error) {
         console.log(error);
         parentPort.postMessage({ status: 'error', error });

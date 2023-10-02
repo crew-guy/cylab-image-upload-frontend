@@ -29,6 +29,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
         file.on('end', async function () {
             const worker = new Worker('./worker-upload.js');
+            const workerPromise = new Promise((resolve, reject) => {
+                worker.on('message', (data: any) => {
+                    if (data.status === 'success') {
+                        console.log(`Upload of '${fileName}' complete`, { data })
+                        resolve(data);
+                    } else {
+                        console.log(`Upload of '${fileName}' failed`, { error: data.error })
+                        reject(data.error);
+                    }
+                });
+                worker.on('error', (err) => {
+                    console.log(`Upload of '${fileName}' failed`, { err })
+                    reject(err);
+                });
+            });
+            uploadPromises.push(workerPromise); // Push each worker promise into the array
             worker.postMessage({
                 fileData: fileData,
                 fileName: fileName,
@@ -37,36 +53,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 AZURE_CONTAINER_NAME: AZURE_CONTAINER_NAME,
             });
 
-            worker.on('message', (data: any, error: any) => {
-                if (data.status === 'success') {
-                    console.log(`Upload of '${fileName}' complete`, { data })
-                    // res.status(201).json({ data })
-                } else {
-                    // Handle error
-                    console.log(`Upload of '${fileName}' failed`, { error })
-                    res.status(400).json({ error })
+            // worker.on('message', (data: any, error: any) => {
+            //     if (data.status === 'success') {
+            //         console.log(`Upload of '${fileName}' complete`, { data })
+            //         // res.status(201).json({ data })
+            //     } else {
+            //         // Handle error
+            //         console.log(`Upload of '${fileName}' failed`, { error })
+            //         res.status(400).json({ error })
 
-                }
-            });
+            //     }
+            // });
 
-            worker.on('error', (err) => {
-                console.log(`Upload of '${fileName}' failed`, { err })
-            });
+            // worker.on('error', (err) => {
+            //     console.log(`Upload of '${fileName}' failed`, { err })
+            // });
 
-            worker.on('exit', (code) => {
-                if (code !== 0) {
-                    console.error(`Worker stopped with exit code ${code}`);
-                }
-            });
+            // worker.on('exit', (code) => {
+            //     if (code !== 0) {
+            //         console.error(`Worker stopped with exit code ${code}`);
+            //     }
+            // });
         });
     });
 
     busboy.on('finish', async function () {
         try {
-            const results = await Promise.all(uploadPromises);
+            const results = await Promise.all(uploadPromises); // Wait for all worker promises to resolve
             return res.status(200).json({ results });
         } catch (error) {
             console.log(error);
+            res.status(500).json({ error: 'Failed to upload all files' });
         }
     });
     busboy.on('error', function (error) {
