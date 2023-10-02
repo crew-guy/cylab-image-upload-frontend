@@ -3,7 +3,7 @@ version: '3.8'
 services:
   nextjs:
     container_name: nextjs_dev
-    build: 
+    build:
       context: .
       dockerfile: develop.Dockerfile
     ports:
@@ -14,3 +14,11 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+  nginx_lb:
+    container_name: nginx_container
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"

@@ -23,7 +23,7 @@ export default function Home() {
       formData.append('filename', file.name.replace(/\s/g, ''));
       // console.log(`File number ${index + 1} is being uploaded`)
       try {
-        const response = fetch(apiEndpointUrl, {
+        const response = await fetch(apiEndpointUrl, {
           method: 'POST',
           body: formData
         });
@@ -36,8 +36,8 @@ export default function Home() {
     try {
       await Promise.all(uploadPromises);
       console.log(`File is uploaded`)
-      const endTime = Date.now();  // Timestamp after all uploads are finished
-      setUploadDuration(endTime - startTime);  // Set the duration difference
+      const endTime = await Date.now();  // Timestamp after all uploads are finished
+      await setUploadDuration(endTime - startTime);  // Set the duration difference
     } catch (error: any) {
       console.log('error', error.message);
     }
