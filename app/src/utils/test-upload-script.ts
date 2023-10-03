@@ -4,7 +4,7 @@ import axios from 'axios';
 import FormData from 'form-data';
 
 const TEST_ITERATIONS = 5; // Number of times to repeat the test for each batch size
-const FILE_DIRECTORY = '/path/to/your/images'; // Replace with the path to your image directory
+const FILE_DIRECTORY = '../../../assets'; // Replace with the path to your image directory
 const UPLOAD_ENDPOINT = 'http://localhost:3000/api/upload2'; // Replace with your actual endpoint
 
 async function uploadFiles(files: string[]): Promise<number> {
