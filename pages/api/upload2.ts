@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             console.error('Error with file stream:', error);
         });
         file.on('end', async function () {
-            const worker = new Worker('./worker-upload.js');
+            const worker = new Worker('./worker-upload.cjs');
             const workerPromise = new Promise((resolve, reject) => {
                 worker.on('message', (data: any) => {
                     if (data.status === 'success') {

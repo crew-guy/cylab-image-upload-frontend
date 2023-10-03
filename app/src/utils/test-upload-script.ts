@@ -1,10 +1,12 @@
+#!/usr/bin/env ts-node
+
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
 import FormData from 'form-data';
 
 const TEST_ITERATIONS = 5; // Number of times to repeat the test for each batch size
-const FILE_DIRECTORY = '../../../assets'; // Replace with the path to your image directory
+const FILE_DIRECTORY = 'assets'; // Replace with the path to your image directory
 const UPLOAD_ENDPOINT = 'http://localhost:3000/api/upload2'; // Replace with your actual endpoint
 
 async function uploadFiles(files: string[]): Promise<number> {
@@ -25,7 +27,7 @@ async function uploadFiles(files: string[]): Promise<number> {
 async function performTest() {
     const allFiles = fs.readdirSync(FILE_DIRECTORY).filter(file => {
         const filePath = path.join(FILE_DIRECTORY, file);
-        return fs.statSync(filePath).isFile() && path.extname(filePath) === '.jpg'; // Adjust file extension as needed
+        return fs.statSync(filePath).isFile() // Adjust file extension as needed
     }).map(file => path.join(FILE_DIRECTORY, file));
     const batchSizes = [1, 2, 5, 10];
     for (const batchSize of batchSizes) {

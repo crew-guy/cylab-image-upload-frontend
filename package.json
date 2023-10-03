@@ -7,12 +7,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node --experimental-specifier-resolution=node --loader ts-node/esm app/src/utils/test-upload-script.ts"
   },
   "dependencies": {
     "@azure/storage-blob": "^12.15.0",
     "@types/multiparty": "^0.0.33",
-    "@types/node": "20.6.0",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "adm-zip": "^0.5.10",
@@ -20,17 +20,18 @@
     "axios": "^1.5.1",
     "busboy": "^1.6.0",
     "file-saver": "^2.0.5",
+    "form-data": "^4.0.0",
     "jszip": "^3.10.1",
     "multiparty": "^4.2.3",
     "next": "13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "ts-node": "^10.9.1",
     "typescript": "5.2.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.2",
+    "ts-node": "^10.9.1",
     "@types/archiver": "^5.3.3",
     "@types/axios": "^0.14.0",
     "@types/busboy": "^1.5.0",

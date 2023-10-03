@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,38 +35,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
-var parentPort = require('worker_threads').parentPort;
-var _a = require("@azure/storage-blob"), BlobServiceClient = _a.BlobServiceClient, ContainerClient = _a.ContainerClient;
-require('ts-node').register();
-parentPort.on('message', function (data) { return __awaiter(_this, void 0, void 0, function () {
+Object.defineProperty(exports, "__esModule", { value: true });
+var worker_threads_1 = require("worker_threads");
+var storage_blob_1 = require("@azure/storage-blob");
+var tsNode = require("ts-node");
+tsNode.register();
+worker_threads_1.parentPort.on('message', function (data) { return __awaiter(void 0, void 0, void 0, function () {
     var fileData, fileName, AZURE_CONNECTION_STRING, AZURE_SAS_TOKEN, AZURE_CONTAINER_NAME, blobServiceClient, sasToken, containerName, containerUrl, containerClient, blobClient, blockBlobClient, finalFileBuffer, response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 fileData = data.fileData, fileName = data.fileName, AZURE_CONNECTION_STRING = data.AZURE_CONNECTION_STRING, AZURE_SAS_TOKEN = data.AZURE_SAS_TOKEN, AZURE_CONTAINER_NAME = data.AZURE_CONTAINER_NAME;
-                blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_CONNECTION_STRING);
+                blobServiceClient = storage_blob_1.BlobServiceClient.fromConnectionString(AZURE_CONNECTION_STRING);
                 sasToken = AZURE_SAS_TOKEN;
                 containerName = AZURE_CONTAINER_NAME;
                 containerUrl = blobServiceClient.getContainerClient(containerName).url + sasToken;
-                containerClient = new ContainerClient(containerUrl);
+                containerClient = new storage_blob_1.ContainerClient(containerUrl);
                 blobClient = containerClient.getBlobClient(fileName);
                 blockBlobClient = blobClient.getBlockBlobClient();
                 finalFileBuffer = Buffer.concat(fileData);
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
+                _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, blockBlobClient.upload(finalFileBuffer, finalFileBuffer.length)];
             case 2:
                 response = _a.sent();
-                parentPort.postMessage({ status: 'success', response: response });
-                return [3 /*break*/, 4];
+                return [4 /*yield*/, worker_threads_1.parentPort.postMessage({ status: 'success', response: response })];
             case 3:
+                _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
                 error_1 = _a.sent();
                 console.log(error_1);
-                parentPort.postMessage({ status: 'error', error: error_1 });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                worker_threads_1.parentPort.postMessage({ status: 'error', error: error_1 });
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); });
