@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  nextjs:
+  nextjs-test:
     container_name: nextjs_dev
     build:
       context: .
