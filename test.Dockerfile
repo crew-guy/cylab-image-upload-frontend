@@ -14,4 +14,4 @@ RUN npm install
 COPY . .
 
 # Build the Next.js application
-RUN npm run test
+RUN npm run stresstest

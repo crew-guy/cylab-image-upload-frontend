@@ -38,7 +38,7 @@
     "**/*.js",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "app/src/utils/test-upload-script.cjs", "worker-upload.cjs"  ],
+, "app/src/utils/test-upload-script.cjs", "worker-upload.cjs", "jest.config.cjs"  ],
   "exclude": [
     "node_modules"
   ]
