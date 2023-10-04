@@ -13,9 +13,6 @@ const localEndpoint = 'http://localhost:3000/api/upload2';
 const remoteEndpoint = 'http://128.2.24.80:3000/api/upload2';
 
 
-
-
-
 const UPLOAD_ENDPOINT = remoteEndpoint; // Replace with your actual endpoint
 
 async function uploadFiles(files: string[]): Promise<number> {
