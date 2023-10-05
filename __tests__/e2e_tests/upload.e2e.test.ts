@@ -6,16 +6,16 @@ test('upload files', async ({ page }: any) => {
 
     // Upload a file
     const input = await page.locator('input[type="file"]');
-    await input.setInputFiles('../app/src/assets/IMG_0234.HEIC'); // replace with the actual file path
+    await input.setInputFiles('app/src/assets/IMG_0234.HEIC'); // replace with the actual file path
 
     // Click the upload button
-    await page.locator('button').withText('Upload Serially to Azure').click();
+    await page.click('text=Upload Serially to Azure');
 
     // Check if uploading text is displayed
-    expect(await page.locator('p').withText('Uploading...')).toBeVisible();
+    expect(await page.locator('text=Uploading...')).toBeVisible();
 
     // Wait for the upload duration text to appear
-    await page.locator('p').withText(/Upload duration: \d+ milliseconds/).waitFor();
+    await page.locator('text=/Upload duration: \\d+ milliseconds/').waitFor();
 
     // Additional assertions can be placed here to check the state of your application
 });
