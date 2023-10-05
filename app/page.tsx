@@ -54,7 +54,8 @@ export default function Home() {
       height: '100vh',
     }}>
       <h2>Image Uploader</h2>
-      <input multiple type="file" onChange={handleFileChange} />
+      <label htmlFor="file-upload">Upload File:</label>
+      <input aria-label="Upload File:" multiple type="file" onChange={handleFileChange} />
       <button
         style={{
           padding: '10px',
