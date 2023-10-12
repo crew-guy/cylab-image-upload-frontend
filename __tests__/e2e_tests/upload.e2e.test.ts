@@ -6,7 +6,7 @@ test('upload files', async ({ page }: any) => {
 
     // Upload a file
     const input = await page.locator('input[type="file"]');
-    await input.setInputFiles('app/src/assets/IMG_0234.HEIC'); // replace with the actual file path
+    await input.setInputFiles('app/src/assets/test.HEIC'); // replace with the actual file path
 
     // Click the upload button
     await page.click('text=Upload Serially to Azure');
