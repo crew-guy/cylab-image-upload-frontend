@@ -4,9 +4,11 @@ import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import productReducer from './productSlice';
+import userReducer from './userSlice';
 
 const rootReducer = combineReducers({
     product: productReducer,
+    user: userReducer,
 });
 
 const persistConfig = {
@@ -21,3 +23,6 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

@@ -1,0 +1,6 @@
+.camera-view-container {
+    position: absolute;
+    color: white;
+    padding: 10;
+    background: rgba(0, 0, 0, 0.5)
+}
