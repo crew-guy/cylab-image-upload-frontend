@@ -7,7 +7,6 @@ const AZURE_SAS_TOKEN = process.env.NEXT_PUBLIC_AZURE_SAS_TOKEN
 const AZURE_CONTAINER_NAME = process.env.NEXT_PUBLIC_AZURE_CONTAINER_NAME
 
 function uploadToAzure(fileData: Buffer[], fileName: string): Promise<any> {
-    console.log(`Uploading '${fileName}' to Azure`)
     return new Promise(async (resolve, reject) => {
         const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_CONNECTION_STRING as string);
         const sasToken = AZURE_SAS_TOKEN as string;
